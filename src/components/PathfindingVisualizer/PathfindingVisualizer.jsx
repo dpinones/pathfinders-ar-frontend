@@ -1,41 +1,17 @@
 import React, {useEffect} from 'react';
 import Node from './Node/Node';
-import { useStarknetCall} from "@starknet-react/core";
-// import {dijkstra} from '../algorithms/dijkstra';
-// import {AStar} from '../algorithms/aStar';
-// import {dfs} from '../algorithms/dfs';
-// import {bfs} from '../algorithms/bfs';
-// import IPoint from '../models/point';
 
 import './PathfindingVisualizer.css';
 
-export default function PathfindingVisualizer({setPathFindingInput}) {
-
-  const [grid, setGrid] = React.useState([]);
-  const [START_NODE_ROW, setSTART_NODE_COL] = React.useState(4);
-  const [FINISH_NODE_ROW, setFINISH_NODE_ROW] = React.useState(4);
-  const [START_NODE_COL, setSTART_NODE_ROW] = React.useState(1);
-  const [FINISH_NODE_COL, setFINISH_NODE_COL] = React.useState(7);
-  const [mouseIsPressed, setMouseIsPressed] = React.useState(false);
-  const [ROW_COUNT, setROW_COUNT] = React.useState(9);
-  const [COLUMN_COUNT, setCOLUMN_COUNT] = React.useState(9);
-  const [MOBILE_ROW_COUNT, setMOBILE_ROW_COUNT] = React.useState(9);
-  const [MOBILE_COLUMN_COUNT, setMOBILE_COLUMN_COUNT] = React.useState(9);
-  const [isRunning, setIsRunning] = React.useState(false);
-  const [isStartNode, setStartNode] = React.useState(false);
-  const [isFinishNode, setIsFinishNode] = React.useState(false);
-  const [isWallNode, setIsWallNode] = React.useState(false);
-  const [currRow, setCurrRow] = React.useState(0);
-  const [currCol, setCurrCol] = React.useState(0);
-  const [isDesktopView, setIsDesktopView] = React.useState(true);
+export default function PathfindingVisualizer({setPathFindingInput, props}) {
 
   useEffect(() => {
-    setGrid(getInitialGrid());
+    props.setGrid(getInitialGrid());
   }, []);
 
   const getInitialGrid = (
-    rowCount = ROW_COUNT,
-    colCount = COLUMN_COUNT,
+    rowCount = props.ROW_COUNT,
+    colCount = props.COLUMN_COUNT,
   ) => {
     const initialGrid = [];
     for (let row = 0; row < rowCount; row++) {
@@ -49,37 +25,37 @@ export default function PathfindingVisualizer({setPathFindingInput}) {
   };
 
   const toggleIsRunning = () => {
-    setIsRunning(!isRunning);
+    props.setIsRunning(!props.isRunning);
   }
 
   const toggleView = () => {
-    if (!isRunning) {
+    if (!props.isRunning) {
       clearGrid();
       clearWalls();
-      const isDesktopView = !isDesktopView;
+      const isDesktopView = !props.isDesktopView;
       let grid;
       if (isDesktopView) {
         grid = getInitialGrid(
-          ROW_COUNT,
-          COLUMN_COUNT,
+          props.ROW_COUNT,
+          props.COLUMN_COUNT,
         );
-        setIsDesktopView(isDesktopView);
-        setGrid(grid);
+        props.setIsDesktopView(isDesktopView);
+        props.setGrid(grid);
       } else {
         if (
-          START_NODE_ROW > MOBILE_ROW_COUNT ||
-          FINISH_NODE_ROW > MOBILE_ROW_COUNT ||
-          START_NODE_COL > MOBILE_COLUMN_COUNT ||
-          FINISH_NODE_COL > MOBILE_COLUMN_COUNT
+          props.START_NODE_ROW > props.MOBILE_ROW_COUNT ||
+          props.FINISH_NODE_ROW > props.MOBILE_ROW_COUNT ||
+          props.START_NODE_COL > props.MOBILE_COLUMN_COUNT ||
+          props.FINISH_NODE_COL > props.MOBILE_COLUMN_COUNT
         ) {
           alert('Start & Finish Nodes Must Be within 10 Rows x 20 Columns');
         } else {
           grid = getInitialGrid(
-            MOBILE_ROW_COUNT,
-            MOBILE_COLUMN_COUNT,
+            props.MOBILE_ROW_COUNT,
+            props.MOBILE_COLUMN_COUNT,
           );
-          setIsDesktopView(isDesktopView);
-          setGrid(grid);
+          props.setIsDesktopView(isDesktopView);
+          props.setGrid(grid);
         }
       }
     }
@@ -90,14 +66,14 @@ export default function PathfindingVisualizer({setPathFindingInput}) {
       row,
       col,
       isStart:
-        row === START_NODE_ROW && col === START_NODE_COL,
+        row === props.START_NODE_ROW && col === props.START_NODE_COL,
       isFinish:
-        row === FINISH_NODE_ROW &&
-        col === FINISH_NODE_COL,
+        row === props.FINISH_NODE_ROW &&
+        col === props.FINISH_NODE_COL,
       distance: Infinity,
       distanceToFinishNode:
-        Math.abs(FINISH_NODE_ROW - row) +
-        Math.abs(FINISH_NODE_COL - col),
+        Math.abs(props.FINISH_NODE_ROW - row) +
+        Math.abs(props.FINISH_NODE_COL - col),
       isVisited: false,
       isWall: false,
       previousNode: null,
@@ -106,32 +82,36 @@ export default function PathfindingVisualizer({setPathFindingInput}) {
   };
 
   const handleMouseDown = (row, col) => {
-    if (!isRunning) {
+    // console.log('handleMouseDown');
+    // console.log('row: ', row);
+    // console.log('col: ', col);
+    if (!props.isRunning) {
       if (isGridClear()) {
         if (
           document.getElementById(`node-${row}-${col}`).className ===
           'node node-start'
         ) {
-          setMouseIsPressed(true);
-          setStartNode(true);
-          setCurrRow(row);
-          setCurrCol(col);
+          props.setMouseIsPressed(true);
+          props.setStartNode(true);
+          props.setCurrRow(row);
+          props.setCurrCol(col);
         } else if (
           document.getElementById(`node-${row}-${col}`).className ===
           'node node-finish'
         ) {
 
-          setMouseIsPressed(true);
-          setIsFinishNode(true);
-          setCurrRow(row);
-          setCurrCol(col);
+          props.setMouseIsPressed(true);
+          props.setIsFinishNode(true);
+          props.setCurrRow(row);
+          props.setCurrCol(col);
         } else {
-          const newGrid = getNewGridWithWallToggled(grid, row, col);
-          setGrid(newGrid);
-          setMouseIsPressed(true);
-          setIsWallNode(true);
-          setCurrRow(row);
-          setCurrCol(col);
+          console.log('handleMouseDown');
+          const newGrid = getNewGridWithWallToggled(props.grid, row, col);
+          props.setGrid(newGrid);
+          props.setMouseIsPressed(true);
+          props.setIsWallNode(true);
+          props.setCurrRow(row);
+          props.setCurrCol(col);
         }
       } else {
         clearGrid();
@@ -140,7 +120,7 @@ export default function PathfindingVisualizer({setPathFindingInput}) {
   }
 
   const isGridClear = () => {
-    for (const row of grid) {
+    for (const row of props.grid) {
       for (const node of row) {
         const nodeClassName = document.getElementById(
           `node-${node.row}-${node.col}`,
@@ -157,89 +137,94 @@ export default function PathfindingVisualizer({setPathFindingInput}) {
   }
 
   const handleMouseEnter = (row, col) => {
-    if (!isRunning) {
-      if (mouseIsPressed) {
+    // console.log('handleMouseEnter');
+    // console.log('row: ', row);
+    // console.log('col: ', col);
+    if (!props.isRunning) {
+      console.log('mouseIsPressed: ', props.mouseIsPressed);
+      if (props.mouseIsPressed) {
         const nodeClassName = document.getElementById(`node-${row}-${col}`)
           .className;
-        if (isStartNode) {
+        if (props.isStartNode) {
           if (nodeClassName !== 'node node-wall') {
-            const prevStartNode = grid[currRow][currCol];
+            const prevStartNode = props.grid[props.currRow][props.currCol];
             prevStartNode.isStart = false;
             document.getElementById(
-              `node-${currRow}-${currCol}`,
+              `node-${props.currRow}-${props.currCol}`,
             ).className = 'node';
 
-            setCurrRow(row);
-            setCurrCol(col);
+            props.setCurrRow(row);
+            props.setCurrCol(col);
 
-            const currStartNode = grid[row][col];
+            const currStartNode = props.grid[props.row][props.col];
             currStartNode.isStart = true;
             document.getElementById(`node-${row}-${col}`).className =
               'node node-start';
           }
-          setSTART_NODE_ROW(row);
-          setSTART_NODE_COL(col);
-        } else if (isFinishNode) {
+          props.setSTART_NODE_ROW(row);
+          props.setSTART_NODE_COL(col);
+        } else if (props.isFinishNode) {
           if (nodeClassName !== 'node node-wall') {
-            const prevFinishNode = grid[currRow][currCol];
+            const prevFinishNode = props.grid[props.currRow][props.currCol];
             prevFinishNode.isFinish = false;
             document.getElementById(
-              `node-${currRow}-${currCol}`,
+              `node-${props.currRow}-${props.currCol}`,
             ).className = 'node';
 
-            setCurrRow(row);
-            setCurrCol(col);
+            props.setCurrRow(row);
+            props.setCurrCol(col);
 
-            const currFinishNode = grid[row][col];
+            const currFinishNode = props.grid[row][col];
             currFinishNode.isFinish = true;
             document.getElementById(`node-${row}-${col}`).className =
               'node node-finish';
           }
-          setFINISH_NODE_ROW(row);
-          setFINISH_NODE_COL(col);
-        } else if (isWallNode) {
-          const newGrid = getNewGridWithWallToggled(grid, row, col);
-          setGrid(newGrid);
+          props.setFINISH_NODE_ROW(row);
+          props.setFINISH_NODE_COL(col);
+        } else if (props.isWallNode) {
+          console.log('handleMouseEnter');
+          const newGrid = getNewGridWithWallToggled(props.grid, row, col);
+          props.setGrid(newGrid);
         }
       }
     }
   }
 
   const handleMouseUp = (row, col) => {
-    if (!isRunning) {
-      setMouseIsPressed(false);
-      if (isStartNode) {
-        const isStartNode = !isStartNode;
-        setStartNode(isStartNode);
-        setSTART_NODE_ROW(row);
-        setSTART_NODE_COL(col);
-      } else if (isFinishNode) {
-        const isFinishNode = !isFinishNode;
-        setIsFinishNode(isFinishNode);
-        setFINISH_NODE_ROW(row);
-        setFINISH_NODE_COL(col);
+    if (!props.isRunning) {
+      props.setMouseIsPressed(false);
+      if (props.isStartNode) {
+        const isStartNode = !props.isStartNode;
+        props.setStartNode(isStartNode);
+        props.setSTART_NODE_ROW(row);
+        props.setSTART_NODE_COL(col);
+      } else if (props.isFinishNode) {
+        const isFinishNode = !props.isFinishNode;
+        props.setIsFinishNode(isFinishNode);
+        props.setFINISH_NODE_ROW(row);
+        props.setFINISH_NODE_COL(col);
       }
       getInitialGrid();
     }
   }
 
   const handleMouseLeave = () => {
-    if (isStartNode) {
-      setStartNode(!isStartNode);
-      setMouseIsPressed(false);
-    } else if (isFinishNode) {
-      setIsFinishNode(!isFinishNode);
-      setMouseIsPressed(false);
-    } else if (isWallNode) {
-      setIsWallNode(!isWallNode);
-      setMouseIsPressed(false);
+    if (props.isStartNode) {
+      props.setStartNode(!props.isStartNode);
+      props.setMouseIsPressed(false);
+    } else if (props.isFinishNode) {
+      props.setIsFinishNode(!props.isFinishNode);
+      props.setMouseIsPressed(false);
+    } else if (props.isWallNode) {
+      props.setIsWallNode(!props.isWallNode);
+      props.setMouseIsPressed(false);
       getInitialGrid();
     }
   }
 
   const clearGrid = () => {
-    if (!isRunning) {
-      const newGrid = grid.slice();
+    if (!props.isRunning) {
+      const newGrid = props.grid.slice();
       for (const row of newGrid) {
         for (const node of row) {
           let nodeClassName = document.getElementById(
@@ -255,8 +240,8 @@ export default function PathfindingVisualizer({setPathFindingInput}) {
             node.isVisited = false;
             node.distance = Infinity;
             node.distanceToFinishNode =
-              Math.abs(FINISH_NODE_ROW - node.row) +
-              Math.abs(FINISH_NODE_COL - node.col);
+              Math.abs(props.FINISH_NODE_ROW - node.row) +
+              Math.abs(props.FINISH_NODE_COL - node.col);
           }
           if (nodeClassName === 'node node-finish') {
             node.isVisited = false;
@@ -267,8 +252,8 @@ export default function PathfindingVisualizer({setPathFindingInput}) {
             node.isVisited = false;
             node.distance = Infinity;
             node.distanceToFinishNode =
-              Math.abs(FINISH_NODE_ROW - node.row) +
-              Math.abs(FINISH_NODE_COL - node.col);
+              Math.abs(props.FINISH_NODE_ROW - node.row) +
+              Math.abs(props.FINISH_NODE_COL - node.col);
             node.isStart = true;
             node.isWall = false;
             node.previousNode = null;
@@ -280,8 +265,8 @@ export default function PathfindingVisualizer({setPathFindingInput}) {
   }
 
   const clearWalls = () => {
-    if (!isRunning) {
-      const newGrid = grid.slice();
+    if (!props.isRunning) {
+      const newGrid = props.grid.slice();
       for (const row of newGrid) {
         for (const node of row) {
           let nodeClassName = document.getElementById(
@@ -298,19 +283,21 @@ export default function PathfindingVisualizer({setPathFindingInput}) {
   }
 
   const visualize = (algo) => {
-    if (!isRunning) {
+    if (!props.isRunning) {
       clearGrid();
       toggleIsRunning();
-      const startNode = grid[START_NODE_ROW][START_NODE_COL];
-      const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+      const startNode = props.grid[props.START_NODE_ROW][props.START_NODE_COL];
+      const finishNode = props.grid[props.FINISH_NODE_ROW][props.FINISH_NODE_COL];
       
       // camino a dibujar 
-      console.log('convertGridToPoints: ', convertGridToPoints(grid));
+      console.log('convertGridToPoints: ', convertGridToPoints(props.grid));
       console.log(`start node: (${startNode.col}, ${startNode.row})`);
       console.log(`end node: (${finishNode.col}, ${finishNode.row})`);
 
+      const arr = convertGridToPoints(props.grid).map(element => String(element))
+      const points = [String(startNode.col), String(startNode.row), String(finishNode.col), String(finishNode.row), arr, String(9), String(9)]
 
-      setPathFindingInput([startNode.col, startNode.row, finishNode.col, finishNode.row, convertGridToPoints(grid)]);
+      setPathFindingInput(points);
       // const { data: pathFinder } = useStarknetCall({
       //   contract: '0x2828c45f249ce1e6f8ae9e0a231757296810467246e7a19d9cced99142494a0',
       //   method: "path_finder",
@@ -356,15 +343,15 @@ export default function PathfindingVisualizer({setPathFindingInput}) {
 
   // Backtracks from the finishNode to find the shortest path.
   // Only works when called after the pathfinding methods.
-  function getNodesInShortestPathOrder(finishNode) {
-    const nodesInShortestPathOrder = [];
-    let currentNode = finishNode;
-    while (currentNode !== null) {
-      nodesInShortestPathOrder.unshift(currentNode);
-      currentNode = currentNode.previousNode;
-    }
-    return nodesInShortestPathOrder;
-  }
+  // function getNodesInShortestPathOrder(finishNode) {
+  //   const nodesInShortestPathOrder = [];
+  //   let currentNode = finishNode;
+  //   while (currentNode !== null) {
+  //     nodesInShortestPathOrder.unshift(currentNode);
+  //     currentNode = currentNode.previousNode;
+  //   }
+  //   return nodesInShortestPathOrder;
+  // }
 
 
   return (
@@ -373,7 +360,7 @@ export default function PathfindingVisualizer({setPathFindingInput}) {
         className="grid-container"
         onMouseLeave={() => handleMouseLeave()}>
         <tbody className="grid">
-          {grid.map((row, rowIdx) => {
+          {props.grid.map((row, rowIdx) => {
             return (
               <tr key={rowIdx}>
                 {row.map((node, nodeIdx) => {
@@ -385,7 +372,7 @@ export default function PathfindingVisualizer({setPathFindingInput}) {
                       isFinish={isFinish}
                       isStart={isStart}
                       isWall={isWall}
-                      mouseIsPressed={mouseIsPressed}
+                      mouseIsPressed={props.mouseIsPressed}
                       onMouseDown={(row, col) =>
                         handleMouseDown(row, col)
                       }
