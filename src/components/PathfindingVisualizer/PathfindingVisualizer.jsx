@@ -82,9 +82,6 @@ export default function PathfindingVisualizer({setPathFindingInput, props}) {
   };
 
   const handleMouseDown = (row, col) => {
-    // console.log('handleMouseDown');
-    // console.log('row: ', row);
-    // console.log('col: ', col);
     if (!props.isRunning) {
       if (isGridClear()) {
         if (
@@ -105,7 +102,6 @@ export default function PathfindingVisualizer({setPathFindingInput, props}) {
           props.setCurrRow(row);
           props.setCurrCol(col);
         } else {
-          console.log('handleMouseDown');
           const newGrid = getNewGridWithWallToggled(props.grid, row, col);
           props.setGrid(newGrid);
           props.setMouseIsPressed(true);
@@ -137,11 +133,7 @@ export default function PathfindingVisualizer({setPathFindingInput, props}) {
   }
 
   const handleMouseEnter = (row, col) => {
-    // console.log('handleMouseEnter');
-    // console.log('row: ', row);
-    // console.log('col: ', col);
     if (!props.isRunning) {
-      console.log('mouseIsPressed: ', props.mouseIsPressed);
       if (props.mouseIsPressed) {
         const nodeClassName = document.getElementById(`node-${row}-${col}`)
           .className;
@@ -182,7 +174,6 @@ export default function PathfindingVisualizer({setPathFindingInput, props}) {
           props.setFINISH_NODE_ROW(row);
           props.setFINISH_NODE_COL(col);
         } else if (props.isWallNode) {
-          console.log('handleMouseEnter');
           const newGrid = getNewGridWithWallToggled(props.grid, row, col);
           props.setGrid(newGrid);
         }
@@ -295,7 +286,7 @@ export default function PathfindingVisualizer({setPathFindingInput, props}) {
       console.log(`end node: (${finishNode.col}, ${finishNode.row})`);
 
       const arr = convertGridToPoints(props.grid).map(element => String(element))
-      const points = [String(startNode.col), String(startNode.row), String(finishNode.col), String(finishNode.row), arr, String(9), String(9)]
+      const points = [String(startNode.col), String(startNode.row), String(finishNode.col), String(finishNode.row), arr, String(props.ROW_COUNT), String(props.COLUMN_COUNT)]
 
       setPathFindingInput(points);
       // const { data: pathFinder } = useStarknetCall({
@@ -313,15 +304,19 @@ export default function PathfindingVisualizer({setPathFindingInput, props}) {
   
   const convertGridToPoints = (grid) => {
     const initialGrid = [];
+    let maps = '';
     for (let i = 0; i < grid.length; i++) {
       for (let j = 0; j < grid[i].length; j++) {
         if (grid[i][j].isWall) {
           initialGrid.push(1);
+          maps = maps + '1,'
         } else {
           initialGrid.push(0);
+          maps = maps + '0,'
         }
       }
     }
+    console.log('maps: ', maps)
     return initialGrid;
   }
 

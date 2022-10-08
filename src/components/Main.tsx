@@ -18,15 +18,15 @@ export default function Main() {
   const [pathFindingInput, setPathFindingInput] = React.useState(null);
 
   const [grid, setGrid] = React.useState([]);
-  const [START_NODE_COL, setSTART_NODE_ROW] = React.useState(3);
-  const [START_NODE_ROW, setSTART_NODE_COL] = React.useState(10);
+  const [START_NODE_COL, setSTART_NODE_ROW] = React.useState(1);
+  const [START_NODE_ROW, setSTART_NODE_COL] = React.useState(3);
   const [FINISH_NODE_ROW, setFINISH_NODE_ROW] = React.useState(10);
-  const [FINISH_NODE_COL, setFINISH_NODE_COL] = React.useState(16);
+  const [FINISH_NODE_COL, setFINISH_NODE_COL] = React.useState(7);
   const [mouseIsPressed, setMouseIsPressed] = React.useState(false);
-  const [ROW_COUNT, setROW_COUNT] = React.useState(20);
-  const [COLUMN_COUNT, setCOLUMN_COUNT] = React.useState(20);
-  const [MOBILE_ROW_COUNT, setMOBILE_ROW_COUNT] = React.useState(9);
-  const [MOBILE_COLUMN_COUNT, setMOBILE_COLUMN_COUNT] = React.useState(9);
+  const [ROW_COUNT, setROW_COUNT] = React.useState(12);
+  const [COLUMN_COUNT, setCOLUMN_COUNT] = React.useState(12);
+  const [MOBILE_ROW_COUNT, setMOBILE_ROW_COUNT] = React.useState(12);
+  const [MOBILE_COLUMN_COUNT, setMOBILE_COLUMN_COUNT] = React.useState(12);
   const [isRunning, setIsRunning] = React.useState(false);
   const [isStartNode, setStartNode] = React.useState(false);
   const [isFinishNode, setIsFinishNode] = React.useState(false);

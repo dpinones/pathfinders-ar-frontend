@@ -23,8 +23,8 @@ export default function PathfindingOutputVisualizer({pathFindingInput, setPathFi
       console.log(pathFinderResult[0])
       const parsedResult = pathFinderResult[0].map(element => {
           return {
-            row: element.x.toString(),
-            col: element.y.toString(),
+            row: element.y.toString(),
+            col: element.x.toString(),
           }
         })
       
